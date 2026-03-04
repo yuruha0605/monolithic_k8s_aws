@@ -1,0 +1,44 @@
+version: '3' 
+
+services:
+
+  backend:
+  
+    image: mhpark0605/inspire-monolithic
+    container_name: monolithic-backend-container
+    ports:
+      - "8888:8888"
+    environment:
+      # DB
+      SPRING_DATASOURCE_URL: jdbc:mariadb://lgcns-mhpark0605.ck7648s4on7r.us-east-1.rds.amazonaws.com:3306/inspire?useSSL=true&verifyServerCertificate=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456789
+      # JPA
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create
+      SPRING_JPA_SHOW_SQL: true
+      # redis 
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+
+    restart: always
+    depends_on:
+      #- database
+      - redis
+
+  # AWS RDS
+  # database:
+  #   image: mhpark0605/inspire-mariadb
+  #   container_name: monolithic-mariadb-container
+  #   ports:
+  #     - "6033:3306"
+  #   environment:
+  #     MARIADB_USER: root
+  #     MARIADB_ROOT_PASSWORD: 123456789
+  #     MARIADB_DATABASE: inspire
+
+  redis:
+    image: mhpark0605/inspire-redis  
+    container_name: monolithic-redis-container
+    ports:
+      - "6379:6379"
+    restart: always
