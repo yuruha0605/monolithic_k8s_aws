@@ -17,11 +17,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequestDTO {
-
-    //field
-    private String name;
-    private Integer price;
-    private Integer stockQty;
+    
+    private String  name ; 
+    private Integer price ; 
+    private Integer stockQty ; 
 
     public ProductEntity toEntity(UserEntity user) {
         return ProductEntity.builder()
@@ -29,8 +28,6 @@ public class ProductRequestDTO {
                 .price(this.price)
                 .stockQty(this.stockQty)
                 .user(user)
-                .build();
+                .build() ;
     }
-
-    
 }

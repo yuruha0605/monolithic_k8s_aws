@@ -9,7 +9,6 @@ import com.example.monolithic.user.domain.entity.UserEntity;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Component
 @RequiredArgsConstructor
 public class InitialDataLoader implements CommandLineRunner{

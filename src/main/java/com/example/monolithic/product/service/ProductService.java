@@ -1,6 +1,7 @@
 package com.example.monolithic.product.service;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +27,15 @@ public class ProductService {
 
     public ProductResponseDTO productCreate(ProductRequestDTO request) {
         System.out.println(">>>> product service productCreate");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(">>>> auth getName : " + auth.getName());
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); 
+        System.out.println(">>>> auth getName : "+auth.getName()); 
+        
         UserEntity user = userRepository.findById(auth.getName())
-                                        .orElseThrow(() -> new RuntimeException("User not found"));
-
-        ProductEntity product = request.toEntity(user);
-        return ProductResponseDTO.fromEntity(productRepository.save(product));
+                            .orElseThrow(() -> 
+                                    new RuntimeException("User Not Found!!")) ;  
+        
+        ProductEntity product = request.toEntity(user) ;
+        return  ProductResponseDTO.fromEntity(productRepository.save(product)) ;
     }
+
 }

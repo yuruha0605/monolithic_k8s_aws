@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-deployment
+  namespace: lgcns
+
+spec:
+  # 자원공간의 낭비를 방지하고 관리의 편의성을 제공해주는 옵션!!!
+  revisionHistoryLimit: 2
+
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-pod
+
+  template:
+    metadata:
+      labels:
+        app: order-pod 
+
+    spec:
+      # docker container 
+      containers:
+        - name: order-container
+
+          # ecr 경로
+          image: 310095858382.dkr.ecr.us-east-1.amazonaws.com/order-mhpark0605-backend:latest
+          
+
+          ports:
+          - containerPort: 8888
+
+          # k8s-secret 에 설정한 정보를 외부변수로 application.yml 전달!!!
+          env:
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: lgcns-app-secrets
+                key: DB_HOST
+
+          - name: DB_ADMIN
+            valueFrom:
+              secretKeyRef:
+                name: lgcns-app-secrets
+                key: DB_ADMIN
+
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lgcns-app-secrets
+                key: DB_PASSWORD
+          
+---
+# core service setting
+# core group : pod, service, ConfigMap, Secret, namespace
+apiVersion: v1 
+kind: Service
+metadata:
+  name: order-service
+  namespace: lgcns
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8888
+  selector:
+    app: order-pod
+

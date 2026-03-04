@@ -1,6 +1,5 @@
 package com.example.monolithic.user.provider;
 
-
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -69,6 +68,4 @@ public class JwtProvider {
     public long getRTE() {
         return REFRESH_TOKEN_EXPIRY ;
     }
-
-
 }

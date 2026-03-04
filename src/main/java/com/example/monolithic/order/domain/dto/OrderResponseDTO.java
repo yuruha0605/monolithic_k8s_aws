@@ -12,11 +12,12 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrderResponseDTO {
-    private Long id;
-    private Integer qty;
+    
+    private Long id ; 
+    private Integer qty ; 
     private OrderStatus orderStatus;
 
     public static OrderResponseDTO fromEntity(OrderEntity entity) {
@@ -25,6 +26,7 @@ public class OrderResponseDTO {
                 .qty(entity.getQty())
                 .orderStatus(entity.getOrderStatus())
                 .build();
+
     }
     
 }

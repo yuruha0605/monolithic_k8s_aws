@@ -9,10 +9,12 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
-public class OrderRequestDto {
-    private Long productId;
-    private Integer qty;
-    
+@AllArgsConstructor
+public class OrderRequestDTO {
+    private Long    productId ;
+    private Integer qty ;
 }
+
+
+

@@ -1,3 +1,5 @@
+
+# localhost 
 # server:
 #   port: 8888
   
@@ -64,34 +66,56 @@
 
 
 
-# Docker Version
+
+
+
+
+# aws - ecr image 
 server:
+  forward-headers-strategy: framework
   port: 8888
   
 spring:
   
   # mariadb settings
   datasource:
+
+    # ${} 외부변수값은 어디에? k8s - secret 생성하여 파드실행시 주입할 예정!!
     driver-class-name: org.mariadb.jdbc.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:mariadb://localhost:3306/inspire?useSSL=true&requireSSL=true}
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:123456789}
+    url: jdbc:mariadb://${DB_HOST}:3306/inspire?useSSL=true&requireSSL=true  
+    username: ${DB_ADMIN}  
+    password: ${DB_PASSWORD}
   
   jpa:
     hibernate: 
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:create}
-    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+      # create, create-drop, update, none
+      ddl-auto: create
+      # 콘솔출력
+    show-sql: true
     properties:
       hibernate:
+        # h2
+        # dialect: org.hibernate.dialect.H2Dialect
+        # mariadb
         dialect: org.hibernate.dialect.MariaDBDialect
-        format_sql: true
+        format_sql: true 
+  
+  # redis
+  # docker run -d --name redis-container -p 6379:6379 redis:7.2
+  # docker exec -it redis-container redis-cli 
+  # ping
+  # docker run -d --name redis-insight -p 8001:5540 redis/redisinsight:latest
+  # http://localhost:8001
+  # Host: redis 또는 host.docker.internal , port: 6379
 
   data:
     redis:
-      host: ${SPRING_REDIS_HOST:redis}
-      port: ${SPRING_REDIS_PORT:6379}
-      password:
+      # host 설정은 order_redis.yml 서비스 이름으로변경
+      host: redis-service
+      port: 6379
+      password: 
       timeout: 6000ms
+
 
 jwt:
   secret: mhpark0605-super-secret-key-for-jwt-123456789

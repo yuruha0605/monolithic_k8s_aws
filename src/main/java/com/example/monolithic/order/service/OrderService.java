@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.monolithic.order.dao.OrderRepository;
-import com.example.monolithic.order.domain.dto.OrderRequestDto;
+import com.example.monolithic.order.domain.dto.OrderRequestDTO;
 import com.example.monolithic.order.domain.dto.OrderResponseDTO;
 import com.example.monolithic.order.domain.entity.OrderEntity;
 import com.example.monolithic.product.dao.ProductRepository;
@@ -20,36 +20,39 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class OrderService {
-    private final OrderRepository   orderRepository;
-    private final UserRepository    userRepository;
-    private final ProductRepository productRepository;
+    private final OrderRepository   orderRepository ;
+    private final UserRepository    userRepository ;
+    private final ProductRepository productRepository ;
 
-    public OrderResponseDTO orderCreate(OrderRequestDto request) {
+    public OrderResponseDTO orderCreate(OrderRequestDTO request) { 
         System.out.println(">>>> order service orderCreate");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(">>>> auth getName : " + auth.getName());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); 
+        System.out.println(">>>> auth getName : "+auth.getName()); 
 
         UserEntity user = userRepository.findById(auth.getName())
-                                        .orElseThrow(() -> new RuntimeException("User not found"));
-    
-        ProductEntity product = productRepository.findById(request.getProductId())
-                                        .orElseThrow(() -> new RuntimeException("Product not found"));       
-                                        
-        System.out.println(">>>> order service 재고관리!!!");
-        Integer qty = request.getQty();
+                            .orElseThrow(() -> 
+                                new RuntimeException("User Not Found!!")) ; 
+
+        ProductEntity product = productRepository.findById(request.getProductId())    
+                                .orElseThrow(() -> 
+                                    new RuntimeException("Product Not Found!!")) ;                         
+
+        System.out.println(">>>> order service 재고관리!!!!!!!!"); 
+        Integer qty = request.getQty() ;                             
         if(product.getStockQty() < qty) {
-            throw new RuntimeException("재고가 부족합니다.");
-        } else {
-            product.updateStockQty(request.getQty());
+            throw new RuntimeException(">>>> 재고부족");
+        }else {
+            product.updateStockQty(request.getQty()); 
         }
-
         OrderEntity order = OrderEntity.builder()
-                                    .qty(qty)
-                                    .user(user)
-                                    .product(product)
-                                    .build();
+                                .qty(qty)
+                                .product(product)
+                                .user(user)
+                                .build() ; 
 
-        return OrderResponseDTO.fromEntity(orderRepository.save(order));
+        return OrderResponseDTO.fromEntity(orderRepository.save(order)) ;
 
     }
+
+
 }

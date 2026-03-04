@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  namespace: lgcns
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-pod
+
+  template:
+    metadata:
+      labels:
+        app: redis-pod 
+
+    spec:
+      # docker container 
+      containers:
+        - name: redis-container
+          image: redis
+          ports:
+          - containerPort: 6379
+
+---
+# core service setting
+# core group : pod, service, ConfigMap, Secret, namespace
+apiVersion: v1 
+kind: Service
+metadata:
+  name: redis-service
+  namespace: lgcns
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis-pod
