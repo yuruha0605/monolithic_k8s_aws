@@ -54,7 +54,8 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable() ) // Cross-Site Request Forgery(사이트 위변조)
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/users/signIn").permitAll() 
+                .requestMatchers("/users/signIn",
+                                    "/health/alive").permitAll() 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 //.requestMatchers("").authenticated()  
                 .requestMatchers("/admin/**").hasRole("ADMIN")
