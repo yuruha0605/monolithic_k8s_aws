@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backend-application
+  namespace: argocd
+
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/yuruha0605/monolithic_k8s_aws.
+    targetRevision: main
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: lgcns
+
+  syncPolicy:
+    automated:
+      prune: true
+      # 가장 핵심 : Cluster가 변경이 되면 Git repo 기준으로 Sync
+      selfHeal: true

@@ -1,47 +1,47 @@
-name: deploy order
-#ㅁㄴㅇ 
-on:
-  push:
-    branches:
-      - main
+# name: deploy order
+# #ㅁㄴㅇ 
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-        - name: checkout github 
-          uses: actions/checkout@v2
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#         - name: checkout github 
+#           uses: actions/checkout@v2
 
-        - name: Install Kubectl
-          uses: azure/setup-kubectl@v3
-          with:
-            version: "v1.34.1"
+#         - name: Install Kubectl
+#           uses: azure/setup-kubectl@v3
+#           with:
+#             version: "v1.34.1"
 
-        - name: AWS Configuration
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{secrets.AWS_KEY}}
-            aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-            aws-region: us-east-1
+#         - name: AWS Configuration
+#           uses: aws-actions/configure-aws-credentials@v1
+#           with:
+#             aws-access-key-id: ${{secrets.AWS_KEY}}
+#             aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+#             aws-region: us-east-1
 
-        - name: AWS EKS Cluster Update
-          run: aws eks update-kubeconfig --region us-east-1 --name lgcns-mhpark0605-cluster
+#         - name: AWS EKS Cluster Update
+#           run: aws eks update-kubeconfig --region us-east-1 --name lgcns-mhpark0605-cluster
 
-        - name: AWS ECR Login
-          uses: aws-actions/amazon-ecr-login@v1
+#         - name: AWS ECR Login
+#           uses: aws-actions/amazon-ecr-login@v1
         
-        - name: Build and Push Docker Image to ECR
-          env:
-            REGISTRY: 310095858382.dkr.ecr.us-east-1.amazonaws.com
-            REPOSITORY: order-mhpark0605-backend
-            IMAGE_TAG: latest
-          run: |
-            docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f Dockerfile .
-            docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#         - name: Build and Push Docker Image to ECR
+#           env:
+#             REGISTRY: 310095858382.dkr.ecr.us-east-1.amazonaws.com
+#             REPOSITORY: order-mhpark0605-backend
+#             IMAGE_TAG: latest
+#           run: |
+#             docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f Dockerfile .
+#             docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         
-        - name: Kubectl Apply
-          run: |
-            kubectl apply -f k8s/order_redis.yml
-            kubectl apply -f k8s/order_deployment.yml
-            kubectl apply -f k8s/order_ingress.yml
-            kubectl rollout restart deployment order-deployment -n lgcns
+#         - name: Kubectl Apply
+#           run: |
+#             kubectl apply -f k8s/order_redis.yml
+#             kubectl apply -f k8s/order_deployment.yml
+#             kubectl apply -f k8s/order_ingress.yml
+#             kubectl rollout restart deployment order-deployment -n lgcns
